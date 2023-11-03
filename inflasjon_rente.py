@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def hent_csv():
-    styringsrente_df = pd.read_csv('/Users/Magnus1/Documents/Datateknologi og ingeniørvitenskap/ADA501 Matematiske modeller og simulering/Kode/ADA501_MAT/OBLIG_2//styringsrenten.csv',delimiter=";",decimal=",")
-    styringsrente_df2 = pd.read_csv("/Users/Magnus1/Documents/Datateknologi og ingeniørvitenskap/ADA501 Matematiske modeller og simulering/Kode/ADA501_MAT/OBLIG_2/IR.csv",delimiter=";", decimal = ",")
-    kpi_2006 = pd.read_csv('/Users/Magnus1/Documents/Datateknologi og ingeniørvitenskap/ADA501 Matematiske modeller og simulering/Kode/ADA501_MAT/OBLIG_2/kpi_tab_no.csv',delimiter=";",decimal=",")
-    kpi_1991 = pd.read_csv("/Users/Magnus1/Documents/Datateknologi og ingeniørvitenskap/ADA501 Matematiske modeller og simulering/Kode/ADA501_MAT/OBLIG_2/kpi_1991_2023.csv", delimiter=";", decimal=",")
-    kpi_2019 = pd.read_csv("/Users/Magnus1/Documents/Datateknologi og ingeniørvitenskap/ADA501 Matematiske modeller og simulering/Kode/ADA501_MAT/OBLIG_2/kpi_test.csv", delimiter=";", decimal=",")
+    styringsrente_df = pd.read_csv('datasett_KPI_Styringsrente/styringsrenten.csv',delimiter=";",decimal=",")
+    styringsrente_df2 = pd.read_csv("datasett_KPI_Styringsrente/IR.csv",delimiter=";", decimal = ",")
+    kpi_2006 = pd.read_csv('datasett_KPI_Styringsrente/kpi_tab_no.csv',delimiter=";",decimal=",")
+    kpi_1991 = pd.read_csv("datasett_KPI_Styringsrente/kpi_1991_2023.csv", delimiter=";", decimal=",")
+    kpi_2019 = pd.read_csv("datasett_KPI_Styringsrente/kpi_test.csv", delimiter=";", decimal=",")
     return styringsrente_df,styringsrente_df2,kpi_2006,kpi_1991,kpi_2019
 styringsrente_df, ds, df, kpi_1991, kpi_test = hent_csv()
 # processing csv files
