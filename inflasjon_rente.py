@@ -133,7 +133,14 @@ plot_data(
     labels=[None, None, ["Styringsrente", "KPI"]],
     plot_type="scatter"
 )"""
-
+plot_data(
+    [111],
+    ["Endring i KPI"],
+    [KPI_2006_Prosessert["Dato"]],
+    [KPI_2006_Prosessert["KPI"]],
+    labels=[["Styringsrente", "Endring i KPI"]],
+    plot_type="plot"
+)
 # KPI og styringsrente fra 2019
 plot_data(
     [131, 132, 133],
