@@ -15,9 +15,9 @@ F0 = 72000      # Initial discretionary spending
 
 # ODE system
 def dFdt(F, t, alpha, beta, g, U, P, r, L0, A0):
-    A = A0 * np.exp(g * t)       # Income growing exponentially
+   # A = A0 * np.exp(g * t)       # Income growing exponentially
     L = L0 * np.exp(-r * t) - P * t  # Loan decreasing over time
-    dF = alpha * (A - U - r * L) - beta * F
+    dF = alpha * (A0 - U - r * L) - beta * F
     return dF
 
 # Time vector from 0 to 10 years
