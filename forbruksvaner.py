@@ -9,7 +9,7 @@ df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 plt.figure(figsize=(12, 6))
 for idx, category in enumerate(df.index):
-    if idx != 0:
+    #if idx != 0:
         plt.plot(df.columns.astype(int), df.loc[category], marker='o', label=category)
 
 # Adjusting the x-axis
