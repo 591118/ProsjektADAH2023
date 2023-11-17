@@ -17,19 +17,9 @@ A0 = 480000     # Initial income (Gj. i Norge er rundt 53k)
 F0 = 100000      # Initial discretionary spending (Dette var gj. snitt i 1999 i følge SSB)
 
 # ODE system
-<<<<<<< HEAD
 def dFdt(F, t, alpha, beta, U, P, r, L0, A0):
     #A = A0 * np.exp(g * t)       # Income growing exponentially
-=======
-def dFdt(F, t, alpha, beta, g, U, P, r, L0, A0):
-   # A = A0 * np.exp(g * t)       # Income growing exponentially
->>>>>>> 1789369823689ef5e952475c3598eb523eb5e8e2
     L = L0 * np.exp(-r * t) - P * t  # Loan decreasing over time
-<<<<<<< HEAD
-=======
-
-    #Bruker A0, siden inflasjonen vil spise opp økningen av lønning
->>>>>>> a206a66b9c6dcf092c7b37089e7b470ff544d4df
     dF = alpha * (A0 - U - r * L) - beta * F
     return dF
 
