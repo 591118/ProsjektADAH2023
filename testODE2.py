@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
+import tessst
 
 # Parametere
 gamma = 0.03  # hvor raskt styringsrenten justeres
@@ -11,12 +12,12 @@ i_target = 0.025  # inflasjonsmålet
 def model(y, t):
     i, r = y
     di_dt = delta * (r - i)
-    dr_dt = gamma * (i_target - i) 
+    dr_dt = gamma * (i_target - i)
     return [di_dt, dr_dt]
 
 # Initialbetingelser
 i0 = 0.025  # initial inflasjon
-r0 = 0.09  # initial styringsrente
+r0 = 0.0457  # initial styringsrente
 y0 = [i0, r0]
 
 # Tidsintervaller

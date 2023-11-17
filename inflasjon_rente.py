@@ -38,6 +38,7 @@ def process_dataframe(KPI_2006, date_column='Dato', start_date='2018-10-31'):
 process()
 KPI_2006_Prosessert = process_dataframe(KPI_2006,"Dato","2006-10-31")
 styringsrente_1991_Prosessert = process_dataframe(styringsrente_1991,"TIME_PERIOD","2006-10")
+styringsrente_1991_Prosessert1 = process_dataframe(styringsrente_1991,"TIME_PERIOD","1991-10")
 da = process_dataframe(KPI_2006)
 
 def forskyvNiMåneder(KPI_datasett,Styringsrente_datasett,dateColumnKPI = "Dato",dateColumnStyringsrente= "Dato"):
@@ -115,13 +116,38 @@ def modell_KPI_x_prosent(xProsent):
 
 
 # plots
-plt.plot(kpi_1991["Dato"], kpi_1991["Konsumprisindeks(2015=100)"], color="red", label="Reell KPI")
-plt.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2.5), color = "blue", label="KPI-mål (2,5% økning pr. år)")
-plt.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2), color = "green", label="2% KPI økning pr. år")
-plt.xlabel("År")
-plt.ylabel("KPI")
+fig, ax1 = plt.subplots()
+ax1.plot(kpi_1991["Dato"], kpi_1991["Konsumprisindeks(2015=100)"], color="red", label="Reell KPI")
+ax1.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2.5), color = "blue", label="KPI-mål (2,5% økning pr. år)")
+ax1.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2), color = "green", label="2% KPI økning pr. år")
+ax1.set_xlabel('Tid')
+ax1.set_ylabel('KPI verdi')
+ax1.legend()
+
+ax2 = ax1.twinx()
+ax2.plot(styringsrente_1991_Prosessert1["TIME_PERIOD"],styringsrente_1991_Prosessert1["OBS_VALUE"], label="Reell styringsrente")
+ax2.set_ylabel("Styringsrente")
+ax2.legend()
 plt.title("Inflasjon prognose & reell")
-plt.legend()
+plt.show()
+
+
+
+
+
+
+
+fig, ax1 = plt.subplots()
+ax1.plot(KPI_2006_Prosessert["Dato"], KPI_2006_Prosessert["KPI"], color="red", label="Reell KPI")
+ax1.set_xlabel('Tid')
+ax1.set_ylabel('KPI verdi')
+ax1.legend()
+
+ax2 = ax1.twinx()
+ax2.plot(styringsrente_1991_Prosessert1["TIME_PERIOD"],styringsrente_1991_Prosessert1["OBS_VALUE"], label="Reell styringsrente")
+ax2.set_ylabel("Styringsrente")
+ax2.legend()
+plt.title("Inflasjon prognose & reell")
 plt.show()
 
 """# KPI og styringsrente fra 1991
@@ -133,12 +159,12 @@ plot_data(
     labels=[None, None, ["Styringsrente", "KPI"]],
     plot_type="scatter"
 )"""
-plot_data(
+'''plot_data(
     [111],
     ["Endring i KPI"],
     [KPI_2006_Prosessert["Dato"]],
     [KPI_2006_Prosessert["KPI"]],
-    labels=[["Styringsrente", "Endring i KPI"]],
+    labels=[["Dato", "Endring i KPI"]],
     plot_type="plot"
 )
 # KPI og styringsrente fra 2019
@@ -161,7 +187,7 @@ plot_data(
     [styringsrente_2018["OBS_VALUE"], styringsrente_2018s["OBS_VALUE"],styringsrente_1991_Prosessert["OBS_VALUE"]],
     labels=[[None, "Styringsrente"],[None, "Styringsrente"],["Endring KPI", "Styringsrente"]],
     plot_type="scatter"
-)
+)'''
 
 
 
@@ -173,13 +199,13 @@ def calcAverageKPIIncrease():
     totalkpi = 0
     telle = 0
     kpi = 0
-    for i in range(len(kpi_KPI_2006)):
+    for i in range(len(KPI_2006_Prosessert)):
         if (i%12 != 0):
-            kpi = kpi + kpi_KPI_2006["Månestyringsrente_2018endring (prosent)"][i]
+            kpi = kpi + KPI_2006_Prosessert["Månestyringsrente_2018endring (prosent)"][i]
         else:
             totalkpi = totalkpi + kpi
             kpi = 0
             telle = telle+1
 
-    #print(totalkpi/telle)'''
-
+    print(totalkpi/telle)
+calcAverageKPIIncrease()'''
