@@ -6,7 +6,7 @@ from io import StringIO
 # Data as provided
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
-
+print(df.loc[df.index[1]]+df.loc[df.index[7]]+df.loc[df.index[8]]+df.loc[df.index[4]]+df.loc[df.index[10]])
 plt.figure(figsize=(12, 6))
 for idx, category in enumerate(df.index):
     #if idx != 0:
