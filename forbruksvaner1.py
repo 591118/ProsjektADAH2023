@@ -1,7 +1,9 @@
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-from forbruksvaner import df
+import pandas as pd
+
+df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 # Parameters
 alpha = 0.25     # Propensity to consume out of disposable income
