@@ -7,7 +7,7 @@ df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 # Parameters
 alpha = 0.90   # Propensity to consume out of disposable income
-beta = 0.4      # Adjustment speed of spending habits (MPC)
+beta = 0.33      # Adjustment speed of spending habits (MPC)
 
 #g = 0.02        # Growth rate of income (Må ha inflasjon i modell for å kunne bruke denne. Antar i denne modellen at inflasjonen nuller ut økning i lønn.)
 U = 210000       # Fixed expenses (Ca. Gj. i norge mellom 1999-2012 i følge forbrukerundersøkelsen SSB) (Antar at denne også er konstant)
@@ -22,8 +22,13 @@ def system(t, y, alpha, beta, U, P, r):
     #A = A0 * np.exp(g * t)       # Income growing exponentially
     #L = L0 * np.exp(-r * t) - P * t  # Loan decreasing over time
     F, L = y
-    dL = -P + r * L
-    dF = alpha * (A0 - U - r * L) - beta * F
+    # Har med denne koden fordi mye av betalingene til lånet er bare rentene, og ikke lånet selv.
+    interest_payment = r*L
+    principal_payment = P - interest_payment
+
+
+    dL = -principal_payment
+    dF = alpha * (A0 - U - interest_payment) - beta * F
     return [dF, dL]
 
 
@@ -42,14 +47,19 @@ forbruk, lån = result.y
 
 # Plot results
 plt.figure(figsize=(10, 6))
-plt.plot(years, forbruk, label='Forbruk [kr]')
+plt.subplot(211)
 plt.plot(years, lån, label="lån")
+plt.ylabel('[Kr]')
+plt.legend()
+plt.grid()
 
 # Plotting additional data as in your original code
+plt.subplot(212)
+plt.plot(years, forbruk, label='Forbruk [kr]')
 plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label=df.index[0])
-plt.title('Simulering av forbrukervaner')
+#plt.title('Simulering av forbrukervaner')
 plt.xlabel('Tid (år)')
-plt.ylabel('Forbruk kostnader')
+plt.ylabel('[Kr]')
 #plt.yscale('log')
 plt.legend()
 plt.grid(True)
