@@ -19,6 +19,7 @@ plt.xticks(range(min(df.columns.astype(int)), max(df.columns.astype(int)) + 1, 1
 plt.xlabel('Year')
 plt.ylabel('Amount (kr)')
 plt.title('Yearly Expenditures by Category')
+plt.yscale("log")
 
 # Adding a legend
 plt.legend(title='Expenditure Categories', bbox_to_anchor=(1.05, 1), loc='upper left')
