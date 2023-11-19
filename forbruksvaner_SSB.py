@@ -16,13 +16,14 @@ for idx, category in enumerate(df.index):
 plt.xticks(range(min(df.columns.astype(int)), max(df.columns.astype(int)) + 1, 1))
 
 # Adding labels and title
-plt.xlabel('Year')
-plt.ylabel('Amount (kr)')
-plt.title('Yearly Expenditures by Category')
+plt.xlabel('År')
+plt.ylabel('Beløp (kr)')
+plt.title('Årlige utgifter etter kategori')
 
 # Adding a legend
-plt.legend(title='Expenditure Categories', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.legend(title='Utgiftskategorier', bbox_to_anchor=(1.05, 1), loc='upper left')
 
 # Display the plot
+plt.yscale("log")
 plt.tight_layout()
 plt.show()
