@@ -6,9 +6,9 @@ import pandas as pd
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 # Parameters
-alpha = 0.9   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
+alpha = 0.76   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
 beta = 0.33    # Justeringshastighet for forbruksvaner (MPC)
-delta = 0.3    # Hvor mye renta på lånet avhenger av inflasjonen
+delta = 1    # Hvor mye renta på lånet avhenger av inflasjonen
 
 g = 0.03      # Vekstrate for inntekt (Må ha inflasjon i modellen for å kunne bruke denne. Antar i denne modellen at inflasjonen nuller ut økning i lønn.)
 U0 = 136600    # (210 000kr)Faste utgifter (Ca. Gj. i Norge mellom 1999-2012 i følge forbrukerundersøkelsen SSB) (Antar at denne også er konstant)
@@ -42,7 +42,7 @@ def system(t, y, alpha, beta, P, r, g):
     dU = I*U
     dA = g+I * A
     dL = -principal_payment
-    dF = alpha * (A - U - interest_payment) - beta * F
+    dF = alpha * (A - U) - beta * F
     return [dF, dL, dA, dU]
 
 
