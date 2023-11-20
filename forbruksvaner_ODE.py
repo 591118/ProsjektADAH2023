@@ -48,15 +48,15 @@ forbruk, lån = result.y
 # Plot results
 plt.figure(figsize=(10, 6))
 plt.subplot(211)
-plt.plot(years, lån, label="lån")
+plt.plot(np.array(years), np.array(lån), label="lån")
 plt.ylabel('[Kr]')
 plt.legend()
 plt.grid()
 
 # Plotting additional data as in your original code
 plt.subplot(212)
-plt.plot(years, forbruk, label='Forbruk [kr]')
-plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label=df.index[0])
+plt.plot(np.array(years), np.array(forbruk), label='Forbruk [kr]')
+plt.plot(np.array(df.columns.astype(int)), np.array(df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]]), marker='o', label=df.index[0])
 #plt.title('Simulering av forbrukervaner')
 plt.xlabel('Tid (år)')
 plt.ylabel('[Kr]')
