@@ -25,7 +25,7 @@ def inflation(t):
     frequency = (2 * np.pi) / period
     return avg_inflation + amplitude * np.sin(-frequency * t)
 
-
+#plt.plot(KPI_2006_Prosessert["Dato"],popt)
 # ODE system
 def system(t, y, alpha, beta, P, r, g):
     #A = A0 * np.exp(g * t)       # Income growing exponentially
@@ -40,7 +40,7 @@ def system(t, y, alpha, beta, P, r, g):
     principal_payment = P - interest_payment
 
     dU = I*U
-    dA = g+I * A
+    dA = I * A
     dL = -principal_payment
     dF = alpha * (A - U) - beta * F
     return [dF, dL, dA, dU]
@@ -50,6 +50,7 @@ years = np.arange(1999,2015)
 t_span = (0, years[-1] - years[0])  # Time span for solve_ivp
 t_eval = years - years[0]  # Specific time points for evaluation
 
+
 # Solve ODE using solve_ivp
 result = solve_ivp(system, t_span, [F0, L0, A0, U0], args=(alpha, beta, P, r_base, g), t_eval=t_eval)
 
@@ -57,9 +58,7 @@ result = solve_ivp(system, t_span, [F0, L0, A0, U0], args=(alpha, beta, P, r_bas
 forbruk, lån, lønn, fast_forbruk = result.y
 
 # Time vector for plotting (1999 to 2012)
-#plt.plot(t_span,inflation(t_span))
 plt.plot(t_eval,inflation(t_eval))
-plt.show()
 
 # Plot results
 plt.figure(figsize=(10, 6))
@@ -72,7 +71,7 @@ plt.grid()
 # Plotting additional data as in your original code
 plt.subplot(212)
 plt.plot(years, forbruk, label='Forbruk [kr]')
-plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label=df.index[0])
+plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label="SSB DATA")
 #plt.title('Simulering av forbrukervaner')
 plt.xlabel('Tid (år)')
 plt.ylabel('[Kr]')
