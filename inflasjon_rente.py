@@ -119,15 +119,12 @@ def modell_KPI_x_prosent(xProsent):
 fig, ax1 = plt.subplots()
 ax1.plot(kpi_1991["Dato"], kpi_1991["Konsumprisindeks(2015=100)"], color="red", label="Reell KPI")
 ax1.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2.5), color = "blue", label="KPI-mål (2,5% økning pr. år)")
-ax1.plot(kpi_2001["Dato"], modell_KPI_x_prosent(2), color = "green", label="2% KPI økning pr. år")
+ax1.plot(kpi_2001["Dato"], modell_KPI_x_prosent(1.85), color = "green", label="1.85% KPI økning pr. år")
 ax1.set_xlabel('Tid')
 ax1.set_ylabel('KPI verdi')
 ax1.legend()
 
-ax2 = ax1.twinx()
-ax2.plot(styringsrente_1991_Prosessert1["TIME_PERIOD"],styringsrente_1991_Prosessert1["OBS_VALUE"], label="Reell styringsrente")
-ax2.set_ylabel("Styringsrente")
-ax2.legend()
+''' '''
 plt.title("Inflasjon prognose & reell")
 plt.show()
 
