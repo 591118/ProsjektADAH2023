@@ -6,22 +6,29 @@ import pandas as pd
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 # Parameters
-alpha = 0.6   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
+alpha = 0.68   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
 beta = 1    # Justeringshastighet for forbruksvaner (MPC)
 
 g = 0.017 # Vekstrate for inntekt (Må ha inflasjon i modellen for å kunne bruke denne. Antar i denne modellen at inflasjonen nuller ut økning i lønn.)
 #P = 23224*2.1  # Betalingsbeløp for lån (3,6k i mnd)
 
 r_base = 0.03       # Rentesats på lån (Modellen antar fast rentesats)
-A0 = 184800*2.1    # Opprinnelig inntekt (Gj. nettolønn i Norge er 402 000kr - 284 100kr i 2012 - ca 184 800kr i 1999)
-U0 = A0/2.406   # (210 000kr)Faste utgifter (Ca. Gj. i Norge mellom 1999-2012 i følge forbrukerundersøkelsen SSB) (Antar at denne også er konstant)
-P0 = U0/3.307
-L0 = A0*1.86    # Opprinnelig lånebeløp (338% av årslønnen som er gj. snitt ifølge Gjensidige)
-F0 = 105000    # Opprinnelig diskresjonær(valgfritt) forbruk (Dette var gj. snitt i 1999 i følge dataen til SSB)
+A0 = 184800    # Opprinnelig inntekt (Gj. nettolønn i Norge er 402 000kr - 284 100kr i 2012 - ca 184 800kr i 1999)
+U0 = A0/2.406   # (76808kr)Faste utgifter (Ca. Gj. i Norge mellom 1999-2012 i følge forbrukerundersøkelsen SSB) (Antar at denne også er konstant)
 
-A0_std = 40000
-U0_std = 40000
-L0_std = 69000
+# Ratio mellom lønn og nedbetaling på lån:
+ratio_nedbetaling_lønn = 7.957
+P = A0/ratio_nedbetaling_lønn   # (48774 kr)
+L0 = A0*1.86    # (721828.8) Opprinnelig lånebeløp (338% av årslønnen som er gj. snitt ifølge Gjensidige, 186% i 1999)
+
+F0 = 105000/2.1    # Opprinnelig diskresjonær(valgfritt) forbruk (105 000kr var gj. snitt i 1999 i følge dataen til SSB per 2.1 personer (en husholdning))
+
+#Standardavvik for rnd verdier (normaldistribusjon)
+# Burde kanskje sørge for at forholdet mellom startverdiene og standardavviket er likt på alle
+std_ratio = 4.62
+A0_std = A0/std_ratio 
+U0_std = U0/std_ratio
+L0_std = L0/std_ratio 
 
 
 
@@ -35,9 +42,9 @@ def inflation(t):
 
 #plt.plot(KPI_2006_Prosessert["Dato"],popt)
 # ODE system
-def system(t, y, alpha, beta, r, g):
+def system(t, y, alpha, beta,P, r, g):
 
-    F, L, A, U, P = y
+    F, L, A, U = y
 
     I = 0.0185 # gj.snitt inflasjon på 2%
 
@@ -45,27 +52,25 @@ def system(t, y, alpha, beta, r, g):
     r = r_base
 
     # Har med denne koden fordi mye av betalingene til lånet er bare rentene, og ikke lånet selv.
-    interest_payment = r*L
-    principal_payment = P - interest_payment
+    principal_payment = P - r*L
     
     dU = I*U
     dA = g*A
-    dP = dU/7.957
     dL = -principal_payment
-    dF = alpha * (A - U - interest_payment) - beta * F
-    return [dF, dL, dA, dU, dP]
+    dF = alpha * (A - U - P) - beta * F
+    return [dF, dL, dA, dU]
 
 
-years = np.arange(1999,2035)
+years = np.arange(1999,2020)
 t_span = (0, years[-1] - years[0])  # Time span for solve_ivp
 t_eval = years - years[0]  # Specific time points for evaluation
 
 
 # Solve ODE using solve_ivp
-result = solve_ivp(system, t_span, [F0, L0, A0, U0, P0], args=(alpha, beta, r_base, g), t_eval=t_eval)
+result = solve_ivp(system, t_span, [F0, L0, A0, U0], args=(alpha, beta, P, r_base, g), t_eval=t_eval)
 
 # Extracting the solution
-forbruk, lån, lønn, fasteUtgifter, Pe  = result.y
+forbruk, lån, lønn, fasteUtgifter  = result.y
 
 # Time vector for plotting (1999 to 2012)
 #plt.plot(t_eval,inflation(t_eval))
@@ -83,13 +88,11 @@ for _ in range(num_simulations):
     L0_rand = np.random.normal(L0, L0_std)
     U0_rand = np.random.normal(U0, U0_std)
 
-    P0 = A0_rand/7.957
+    P = A0_rand/ratio_nedbetaling_lønn
  
-
-
     # Run the simulation with random parameters
     #result = solve_ivp(system, t_span, [F0, L0_rand, A0_rand, U0_rand], args=(alpha, beta, P, r_base, g), t_eval=t_eval)
-    result = solve_ivp(system, t_span, [F0, L0_rand, A0, U0_rand, P0], args=(alpha, beta, r_base, g), t_eval=t_eval)
+    result = solve_ivp(system, t_span, [F0, L0_rand, A0, U0], args=(alpha, beta, P, r_base, g), t_eval=t_eval)
     
     # Extract loan amount data and determine payback time
     loan_data = result.y[1]
@@ -98,9 +101,9 @@ for _ in range(num_simulations):
 
     # Save the parameters and outcomes for this iteration
     simulation_data.append({
-        'A0': A0_rand,
+        'A0': A0,
         'L0': L0_rand,
-        'U0': U0_rand,
+        'U0': U0,
         'payback_time': payback_time
     })
 
@@ -116,7 +119,7 @@ dope.to_csv('simulation_data.csv', index=False)
 plt.figure(figsize=(10, 6))
 plt.subplot(211)
 #plt.plot(years, lån, label="lån")
-plt.plot(years, lønn-forbruk-fasteUtgifter-Pe, label="Sparing")
+plt.plot(years, lønn-forbruk-fasteUtgifter, label="Sparing")
 plt.plot(years, fasteUtgifter, label="Faste utgifter" )
 plt.plot(years, lån, label="Gjeld" )
 plt.plot(years, lønn, label="Inntekt" )
@@ -129,7 +132,7 @@ plt.grid()
 # Plotting additional data as in your original code
 plt.subplot(212)
 plt.plot(years, forbruk, label='Luksusforbruk [kr]')
-plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label="SSB DATA")
+plt.plot(df.columns.astype(int), (df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]])/2.1, marker='o', label="SSB DATA")
 #plt.title('Simulering av forbrukervaner')
 plt.xlabel('Tid (år)')
 plt.ylabel('[Kr]')
