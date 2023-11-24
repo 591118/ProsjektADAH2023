@@ -5,11 +5,14 @@ import pandas as pd
 
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
+
+num_simulations = 1000 # For ADA511-delen
+
+sluttÅr = 2060 # StartÅr = 1999. Angi hvor lenge simulasjonen skal kjøre
+
 # Parameters
 alpha = 0.68   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
 beta = 1    # Justeringshastighet for forbruksvaner (MPC)
-
-
 
 
 g = 0.017 # Vekstrate for inntekt (Må ha inflasjon i modellen for å kunne bruke denne. Antar i denne modellen at inflasjonen nuller ut økning i lønn.)
@@ -26,7 +29,7 @@ U0 = A0/ratio_fasteU_lønn   # (76808kr)Faste utgifter (Ca. Gj. i Norge mellom 1
 
 # Ratio mellom lønn og nedbetaling på lån:
 ratio_nedbetaling_lønn = 7.957
-P = A0/ratio_nedbetaling_lønn   # (48774 kr)
+P = A0/ratio_nedbetaling_lønn   # (48774 kr) en tanke kunne vært å ha en P som varierer med en parameter som sier noe om hvor mye av lønningen en person er villig til å betale ned på gjelden (større for folk som tjener mindre)
 
 # Ratio mellom lån og lønn:
 ratio_lån_lønn = 1.86
@@ -37,6 +40,7 @@ F0 = 105000/antallPersonerPerHusholdning    # Opprinnelig diskresjonær(valgfrit
 
 #Standardavvik for rnd verdier (normaldistribusjon)
 # Burde kanskje sørge for at forholdet mellom startverdiene og standardavviket er likt på alle
+# Kan diskutere om hva de burde være / om de burde være forskjellige
 std_ratio = 4.62
 A0_std = A0/std_ratio 
 U0_std = U0/std_ratio
@@ -68,7 +72,7 @@ def system(t, y, alpha, beta,P, r, g, I):
     return [dF, dL, dA, dU]
 
 
-years = np.arange(1999,2020)
+years = np.arange(1999,sluttÅr)
 t_span = (0, years[-1] - years[0])  # Time span for solve_ivp
 t_eval = years - years[0]  # Specific time points for evaluation
 
@@ -107,7 +111,7 @@ plt.show()
 
 ''' ADA511 delen av prosjektet:'''
 
-num_simulations = 1000
+
 simulation_data = []
 loan_payback_times = []
 
@@ -121,7 +125,7 @@ for _ in range(num_simulations):
  
     # Run the simulation with random parameters
     #result = solve_ivp(system, t_span, [F0, L0_rand, A0_rand, U0_rand], args=(alpha, beta, P, r_base, g), t_eval=t_eval)
-    result = solve_ivp(system, t_span, [F0, L0_rand, A0, U0], args=(alpha, beta, P, r, g, I), t_eval=t_eval)
+    result = solve_ivp(system, t_span, [F0, L0, A0_rand, U0], args=(alpha, beta, P, r, g, I), t_eval=t_eval)
     
     # Extract loan amount data and determine payback time
     loan_data = result.y[1]
@@ -130,8 +134,8 @@ for _ in range(num_simulations):
 
     # Save the parameters and outcomes for this iteration
     simulation_data.append({
-        'A0': A0,
-        'L0': L0_rand,
+        'A0': A0_rand,
+        'L0': L0,
         'U0': U0,
         'payback_time': payback_time
     })
