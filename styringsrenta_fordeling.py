@@ -24,17 +24,16 @@ plt.ylabel('Styringsrente')
 plt.subplot(122)
 rounded_values = np.round(styringsrenten['OBS_VALUE'] * 10) / 10
 bins = np.arange(start=np.floor(styringsrenten['OBS_VALUE'].min()), stop=np.ceil(styringsrenten['OBS_VALUE'].max()), step=0.1)
-# Oppretter en sekundær akse for histogrammet  # Dette skaper en ny akse som deler x-aksen med ax1
+
 plt.hist(rounded_values, bins = bins, color='red', orientation='horizontal', alpha=0.5)
 frequencies, bin_edges = np.histogram(rounded_values,bins=bins)
 
 probabilities = frequencies / totalt_antall_datapunkter
 probabilities /= probabilities.sum() # gjøres for at summen av sannsynligheter blir 1. etter avrunding
 
-print(sum(probabilities))
-
-plt.title('Scatter plot og histogram av styringsrenten')
-plt.show()
+print(probabilities) # sannsynlighetsfordeling av 0.1 intervaller fra 0.0 til 6.8
+'''plt.title('Scatter plot og histogram av styringsrenten')
+plt.show()'''
 
 
 
