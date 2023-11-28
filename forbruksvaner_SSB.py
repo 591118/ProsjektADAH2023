@@ -6,14 +6,16 @@ from io import StringIO
 # Data as provided
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
+antPersonerPerHusholdning = 2.1
+
 print(df.loc[df.index[1]]+df.loc[df.index[7]]+df.loc[df.index[8]]+df.loc[df.index[4]]+df.loc[df.index[10]])
 plt.figure(figsize=(12, 6))
 for idx, category in enumerate(df.index):
     #if idx != 0:
-        plt.plot(df.columns.astype(int), df.loc[category], marker='o', label=category)
+        plt.plot(df.columns.astype(int), df.loc[category]/antPersonerPerHusholdning, marker='o', label=category, color='gray')
 
 
-#plt.plot(df.columns.astype(int), df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]], marker='o', label="frivillig/luksus forbruk")
+plt.plot(df.columns.astype(int), (df.loc[df.index[0]]-df.loc[df.index[1]]-df.loc[df.index[7]]-df.loc[df.index[8]]-df.loc[df.index[4]]-df.loc[df.index[10]])/antPersonerPerHusholdning, marker='o', label="frivillig/luksus forbruk")
 # Adjusting the x-axis
 plt.xticks(range(min(df.columns.astype(int)), max(df.columns.astype(int)) + 1, 1))
 

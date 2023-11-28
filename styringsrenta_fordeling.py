@@ -28,6 +28,8 @@ bins = np.arange(start=np.floor(styringsrenten['OBS_VALUE'].min()), stop=np.ceil
 plt.hist(rounded_values, bins = bins, color='red', orientation='horizontal', alpha=0.5)
 frequencies, bin_edges = np.histogram(rounded_values,bins=bins)
 
+bin_edges = np.round((bin_edges+0.5)*10)/1000
+
 probabilities = frequencies / totalt_antall_datapunkter
 probabilities /= probabilities.sum() # gjøres for at summen av sannsynligheter blir 1. etter avrunding
 
@@ -35,8 +37,6 @@ print(probabilities) # sannsynlighetsfordeling av 0.1 intervaller fra 0.0 til 6.
 '''plt.title('Scatter plot og histogram av styringsrenten')
 plt.show()'''
 
-
-
-for i in range(0,20):
-    e = np.random.choice(np.round(bin_edges[:-1]*10)/10,p=probabilities)
+for i in range(0,1000):
+    e = np.random.choice(bin_edges[:-1],p=probabilities)
     print(e)

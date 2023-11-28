@@ -6,7 +6,7 @@ import pandas as pd
 df = pd.read_csv("forbruksvaner.csv", delimiter=";", header=1, index_col=0)
 
 
-sluttÅr = 2030 # StartÅr = 1999. Angi hvor lenge simulasjonen skal kjøre
+sluttÅr = 2020 # StartÅr = 1999. Angi hvor lenge simulasjonen skal kjøre
 
 # Parameters
 alpha = 0.68   # Propensitet til å konsumere av disponibel inntekt (90% forbruk og 10% sparing)
@@ -60,12 +60,10 @@ def system(t, y, alpha, beta,P, r, g, I):
 
     F, L, A, U = y
 
-    # Har med denne koden fordi mye av betalingene til lånet er bare rentene, og ikke lånet selv.
-    principal_payment = P - r*L
     
     dU = I*U
     dA = g*A
-    dL = -principal_payment
+    dL = r*L - P
     dF = alpha * (A - U - P) - beta * F
     return [dF, dL, dA, dU]
 
